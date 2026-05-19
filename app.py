@@ -6,6 +6,7 @@ from PIL import Image
 import albumentations as A
 from albumentations.pytorch import ToTensorV2
 import os
+import io
 
 app = Flask(__name__)
 
@@ -29,10 +30,8 @@ model = smp.Unet(
 )
 
 # =====================================
-# REBUILD MODEL FROM PART FILES
+# LOAD MODEL FROM PART FILES
 # =====================================
-
-MODEL_FILE = "leaf_disease_unet_resnet34.pth"
 
 part_files = sorted([
     f for f in os.listdir()
@@ -42,28 +41,27 @@ part_files = sorted([
 print("Found model parts:")
 print(part_files)
 
-# merge all parts
-with open(MODEL_FILE, "wb") as outfile:
+# create memory buffer
+model_buffer = io.BytesIO()
 
-    for part in part_files:
+# read all parts into buffer
+for part in part_files:
 
-        print("Merging:", part)
+    print("Reading:", part)
 
-        with open(part, "rb") as infile:
-            outfile.write(infile.read())
+    with open(part, "rb") as infile:
+        model_buffer.write(infile.read())
 
-print("Model reconstructed successfully!")
+# move pointer to beginning
+model_buffer.seek(0)
 
-# =====================================
-# LOAD MODEL WEIGHTS
-# =====================================
-
-model.load_state_dict(
-    torch.load(
-        MODEL_FILE,
-        map_location=device
-    )
+# load state dict directly from memory
+state_dict = torch.load(
+    model_buffer,
+    map_location=device
 )
+
+model.load_state_dict(state_dict)
 
 model.to(device)
 
@@ -176,5 +174,5 @@ if __name__ == "__main__":
 
     app.run(
         host="0.0.0.0",
-        port=10000
+        port=int(os.environ.get("PORT", 5000))
     )
