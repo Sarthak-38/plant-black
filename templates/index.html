@@ -1,1 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Leaf Disease Detector</title>
 
+    <style>
+
+        body{
+            font-family: Arial;
+            background:#f5f5f5;
+            text-align:center;
+            padding:40px;
+        }
+
+        .box{
+            background:white;
+            padding:30px;
+            border-radius:10px;
+            width:70%;
+            margin:auto;
+            box-shadow:0 0 10px rgba(0,0,0,0.1);
+        }
+
+        img{
+            width:300px;
+            margin:10px;
+            border-radius:10px;
+        }
+
+        button{
+            padding:10px 20px;
+            background:green;
+            color:white;
+            border:none;
+            border-radius:5px;
+            cursor:pointer;
+        }
+
+    </style>
+</head>
+
+<body>
+
+<div class="box">
+
+    <h1>Leaf Disease Area Detector</h1>
+
+    <form method="POST" enctype="multipart/form-data">
+
+        <input type="file" name="image" required>
+        <br><br>
+
+        <button type="submit">
+            Predict
+        </button>
+
+    </form>
+
+    {% if severity %}
+
+        <h2>Disease Severity: {{severity}}%</h2>
+
+        <div>
+
+            <h3>Uploaded Image</h3>
+            <img src="{{image_path}}">
+
+            <h3>Predicted Mask</h3>
+            <img src="{{mask_path}}">
+
+        </div>
+
+    {% endif %}
+
+</div>
+
+</body>
+</html>
