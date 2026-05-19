@@ -1,0 +1,11 @@
+Flask
+torch
+torchvision
+torchaudio
+segmentation-models-pytorch
+albumentations
+timm
+numpy
+pillow
+gunicorn
+opencv-python-headless
