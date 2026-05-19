@@ -15,7 +15,7 @@ app = Flask(__name__)
 
 IMG_SIZE = 256
 
-device = "cuda" if torch.cuda.is_available() else "cpu"
+device = "cpu"
 
 # =====================================
 # CREATE MODEL
